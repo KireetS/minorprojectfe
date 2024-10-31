@@ -1,15 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaEyeSlash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
+import { login } from "../../api/Auth/AuthAPI";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+  const [email, setEmail] = useState("");
+  const [password, setPass] = useState("");
 
+  const { success, failure } = useContext(ToastifyContext);
+  const handleLogin = async () => {
+    try {
+      const userData = await login(email, password);
+      success("Login successful!");
+
+      const authToken = userData.token;
+
+      localStorage.setItem("auth-token", authToken); // Store the token in local storage
+
+      navigate("/dashboard");
+
+      console.log(userData); // Example of handling the returned data
+    } catch (error) {
+      failure("Login failed. Please check your credentials.");
+    }
+  };
   return (
     <div className="flex items-center justify-center flex-col space-y-6 w-full md:space-y-9">
       <div className="bg-transparent flex items-center justify-center text-2xl font-bold text-white md:text-3xl">
@@ -20,12 +41,20 @@ const Login = () => {
           <label htmlFor="">Email</label>
           <input
             type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             className="bg-primary-color outline-none rounded-md p-2 font-normal w-full md:p-4"
           />
         </div>
         <div className="w-full flex flex-col justify-center items-start space-y-2 md:space-y-4 md:text-lg relative">
           <label htmlFor="">Password</label>
           <input
+            value={password}
+            onChange={(e) => {
+              setPass(e.target.value);
+            }}
             type={showPassword ? "text" : "password"}
             className="bg-primary-color outline-none rounded-md p-2 font-normal w-full md:p-4"
           />
@@ -38,7 +67,10 @@ const Login = () => {
           </button>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <button className="p-2 bg-yellow-500 text-white font-bold rounded-lg md:p-3 md:text-lg">
+          <button
+            className="p-2 bg-yellow-500 text-white font-bold rounded-lg md:p-3 md:text-lg"
+            onClick={handleLogin}
+          >
             Login
           </button>
         </div>

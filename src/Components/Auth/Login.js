@@ -4,6 +4,7 @@ import { FaEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { login } from "../../api/Auth/AuthAPI";
+import LoginContext from "../../Contexts/loginContext/LoginContext";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +16,7 @@ const Login = () => {
   const [password, setPass] = useState("");
 
   const { success, failure } = useContext(ToastifyContext);
+  const { setLogin } = useContext(LoginContext);
   const handleLogin = async () => {
     try {
       const userData = await login(email, password);
@@ -25,7 +27,7 @@ const Login = () => {
       localStorage.setItem("auth-token", authToken); // Store the token in local storage
 
       navigate("/dashboard");
-
+      setLogin(true);
       console.log(userData); // Example of handling the returned data
     } catch (error) {
       failure("Login failed. Please check your credentials.");

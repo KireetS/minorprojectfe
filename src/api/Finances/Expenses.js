@@ -84,44 +84,20 @@ const axiosInstance = axios.create({
     "auth-token": localStorage.getItem("auth-token"), // Or however you manage your token
   },
 });
-
-export const createCategory = async (categoryData) => {
+export const createCategory = async (name) => {
   try {
-    const response = await axiosInstance.post("/categories", categoryData);
-    return response.data; // Return the created category
+    const response = await axiosInstance.post("/expenses/category", { name });
+    console.log("Category created:", response.data);
   } catch (error) {
-    throw error.response.data; // Throw an error if the request fails
+    console.error("Error creating category:", error.response.data);
   }
 };
-
-// Get all categories
 export const getCategories = async () => {
   try {
-    const response = await axiosInstance.get("/categories");
-    return response.data; // Return the list of categories
+    const response = await axiosInstance.get("/expenses/category"); // Adjust this route to fetch categories if you have a specific endpoint
+    console.log("Categories:", response.data.expenseCategories);
+    return response;
   } catch (error) {
-    throw error.response.data; // Throw an error if the request fails
-  }
-};
-
-// Update an existing category
-export const updateCategory = async (categoryId, categoryData) => {
-  try {
-    const response = await axiosInstance.put(
-      `/categories/${categoryId}`,
-      categoryData
-    );
-    return response.data; // Return the updated category
-  } catch (error) {
-    throw error.response.data; // Throw an error if the request fails
-  }
-};
-
-// Delete a category
-export const deleteCategory = async (categoryId) => {
-  try {
-    await axiosInstance.delete(`/categories/${categoryId}`);
-  } catch (error) {
-    throw error.response.data; // Throw an error if the request fails
+    console.error("Error fetching categories:", error.response.data);
   }
 };

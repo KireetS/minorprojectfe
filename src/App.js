@@ -7,6 +7,10 @@ import LoginContext from "./Contexts/loginContext/LoginContext";
 import Mobile from "./Components/Sidebar/Mobile";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import Expenses from "./Components/Expenses/Expenses";
+import Goals from "./Components/Goals/Goals";
+import Investments from "./Components/Investments/Investments";
+import SipCalculator from "./Components/sip/SipCalculator";
+import Dashboard from "./Components/Dashboard/Dashboard";
 function App() {
   const { login, setLogin } = useContext(LoginContext);
   useEffect(() => {
@@ -28,6 +32,10 @@ function App() {
           {login && (
             <>
               <Route path="/expenses" element={<Expenses />} />
+              <Route path="/goals" element={<Goals />} />
+              <Route path="/investments" element={<Investments />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/sip" element={<SipCalculator />} />
             </>
           )}
         </Routes>

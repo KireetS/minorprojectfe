@@ -3,7 +3,11 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import AddExpense from "./AddExpense";
 import AddCategoryModal from "./AddCategoryModal";
-import { deleteExpense, getExpenses } from "../../api/Finances/Expenses";
+import {
+  deleteExpense,
+  getCategories,
+  getExpenses,
+} from "../../api/Finances/Expenses";
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
 import EditExpense from "./EditExpense";
@@ -31,16 +35,7 @@ const Expenses = () => {
     "November",
     "December",
   ];
-  const [categories, setCategories] = useState([
-    "All",
-    "Groceries",
-    "Utilities",
-    "Rent",
-    "Entertainment",
-    "Health",
-    "Transportation",
-    "Other",
-  ]);
+  const [categories, setCategories] = useState([]);
 
   const [expenses, setExpenses] = useState([]);
   const handleModalClose = () => {
@@ -59,6 +54,8 @@ const Expenses = () => {
         selectedYear,
         selectedCategory
       );
+      const x = await getCategories();
+      setCategories(x.data);
       setExpenses(resp);
     } catch (e) {
       failure("failure in loading expenses");
@@ -66,7 +63,14 @@ const Expenses = () => {
   };
   useEffect(() => {
     fetchExpenses();
-  }, [selectedMonth, selectedYear, isCModalOpen, isModalOpen, isEditOpen]);
+  }, [
+    selectedMonth,
+    selectedYear,
+    selectedCategory,
+    isCModalOpen,
+    isModalOpen,
+    isEditOpen,
+  ]);
 
   const sumExpenses = () => {
     let sum = 0;
@@ -161,8 +165,8 @@ const Expenses = () => {
             className="bg-secondary-color p-2 rounded-md text-white"
           >
             {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
+              <option key={category._id} value={category.name}>
+                {category.name}
               </option>
             ))}
           </select>
